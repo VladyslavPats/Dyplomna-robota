@@ -26,7 +26,7 @@
 ### 1. Клонування та налаштування
 ```bash
 # Клонуйте репозиторій
-[git clone
+git clone https://github.com/VladyslavPats/Dyplomna-robota.git
 cd Dyplomna robota
 
 # Встановіть залежності
