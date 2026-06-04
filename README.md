@@ -26,8 +26,8 @@
 ### 1. Клонування та налаштування
 ```bash
 # Клонуйте репозиторій
-git clone https://github.com/VladyslavPats/Osnovy-shtuchnoho-intelektu.git
-cd Osnovy-shtuchnoho-intelektu
+[git clone
+cd Dyplomna robota
 
 # Встановіть залежності
 pip install fastapi uvicorn python-dotenv google-genai sqlalchemy "passlib[bcrypt]" aiogram apscheduler
