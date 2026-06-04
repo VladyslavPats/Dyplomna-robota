@@ -39,3 +39,5 @@ pe -m uvicorn backend:app --reload
 py bot.py
 
 #Запустити index.html через live server
+
+#Додати файл .env
