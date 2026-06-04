@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Підключаємо Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1 data-i18n="appTitle">English Learning</h1>
+        <button class="burger-btn" id="burger-btn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="header-controls" id="mobile-menu">
+            <button id="close-menu-btn" class="close-menu-btn" aria-label="Close">&times;</button>
+            
+            <!-- ПОСИЛАННЯ НА ТЕЛЕГРАМ БОТА В БУРГЕР-МЕНЮ -->
+            <a href="https://t.me/smart_eng_tasks_bot" target="_blank" class="icon-btn" title="Telegram Бот" style="text-decoration: none;">
+                <i class="fab fa-telegram-plane"></i> <span class="menu-text" style="display:none;" data-i18n="tgBotMenu">Telegram Бот</span>
+            </a>
+            
+            <button id="settings-btn" class="icon-btn">
+                <i class="fas fa-cog"></i> <span class="menu-text" data-i18n="settingsTitle" style="display:none;">Налаштування</span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="auth-screen" class="screen">
+            <h2 data-i18n="welcomeTitle">Вітаємо!</h2>
+            <button id="show-registration-btn" class="auth-btn primary-btn" data-i18n="registerButton">Реєстрація</button>
+            <p class="separator" data-i18n="orSeparator">або</p>
+            <button id="show-login-btn" class="auth-btn secondary-btn" data-i18n="loginButton">Вхід</button>
+            <button id="guest-btn" class="auth-btn guest-btn" data-i18n="guestButton" style="margin-top:10px">Гість</button>
+        </section>
+
+        <section id="registration-screen" class="screen" style="display: none;">
+            <h2 data-i18n="registrationTitle">Реєстрація</h2>
+            <form id="registration-form" class="auth-form">
+                <input type="text" id="reg-username-input" required minlength="2" pattern="^[a-zA-Zа-яА-ЯіІїЇєЄґҐ\s]+$" title="Лише літери (мінімум 2)" data-i18n-placeholder="regUsernamePlaceholder">
+                <input type="email" id="reg-email-input" required data-i18n-placeholder="regEmailPlaceholder">
+                <input type="password" id="reg-password-input" required minlength="8" data-i18n-placeholder="regPasswordPlaceholder">
+                <p id="reg-message" class="error-message"></p>
+                <button type="submit" id="register-btn" class="auth-btn primary-btn" data-i18n="registerButtonShort">ОК</button>
+                <button type="button" id="back-to-auth-reg-btn" class="auth-btn secondary-btn" data-i18n="backButton">Назад</button>
+            </form>
+        </section>
+
+        <section id="login-screen" class="screen" style="display: none;">
+            <h2 data-i18n="loginTitle">Вхід</h2>
+            <div class="auth-form">
+                <input type="email" id="login-email-input" data-i18n-placeholder="loginEmailPlaceholder">
+                <input type="password" id="login-password-input" data-i18n-placeholder="loginPasswordPlaceholder">
+                <p id="login-message" class="error-message"></p>
+                <button id="login-btn" class="auth-btn primary-btn" data-i18n="loginButtonShort">Увійти</button>
+                <button id="back-to-auth-login-btn" class="auth-btn secondary-btn" data-i18n="backButton">Назад</button>
+            </div>
+        </section>
+
+        <!-- НОВИЙ ЕКРАН ІНФОРМАЦІЇ ПРО БОТА ПІСЛЯ РЕЄСТРАЦІЇ -->
+        <section id="welcome-bot-screen" class="screen" style="display: none; text-align: center;">
+            <h2 data-i18n="welcomeBotTitle">🎉 Реєстрація успішна!</h2>
+            <p data-i18n="welcomeBotText">Щоб не пропустити важливі тести та тренування, підключіть нашого Telegram-бота. Він надсилатиме вам щоденні нагадування!</p>
+            <div style="background: var(--highlight-bg); padding: 15px; border-radius: 10px; margin: 20px 0; border: 1px solid var(--border-color); color: var(--text-color); font-size: 0.95rem;" data-i18n="welcomeBotHint">
+                💡 Підказка: Посилання на бота завжди доступне у верхньому меню (бургер-меню).
+            </div>
+            <a href="https://t.me/твій_юзернейм_бота" target="_blank" class="auth-btn primary-btn" style="display: block; text-decoration: none; text-align: center; box-sizing: border-box;" data-i18n="goToBotButton">
+                Перейти до бота
+            </a>
+            <button id="skip-bot-btn" class="auth-btn secondary-btn" data-i18n="goToAppButton">Перейти до сервісу</button>
+        </section>
+
+        <section id="app-screen" class="screen" style="display: none;">
+            <div class="user-info">
+                <h3 class="welcome-text"><span id="user-display-name"></span></h3>
+                <div class="progress-section">
+                    <h3 data-i18n="progressTitle">Прогрес</h3>
+                    <div class="progress-bar-container" style="margin-bottom: 15px;">
+                        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                        <span id="progress-text" class="progress-text">0%</span>
+                    </div>
+                    <!-- Круговий графік статистики Chart.js -->
+                    <div style="width: 150px; height: 150px; margin: 0 auto;">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="options-container" style="margin-top: 20px;">
+                <div class="option-group">
+                    <label for="topic" data-i18n="topicLabel">Тема:</label>
+                    <select id="topic">
+                        <option value="food" data-i18n="topicFood">Їжа</option>
+                        <option value="travel" data-i18n="topicTravel">Подорожі</option>
+                        <option value="technology" data-i18n="topicTechnology">IT</option>
+                        <option value="sport" data-i18n="topicSport">Спорт</option>
+                        <option value="nature" data-i18n="topicNature">Природа</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="mode" data-i18n="modeLabel">Режим:</label>
+                    <select id="mode">
+                        <option value="practice" data-i18n="modePractice">Практика</option>
+                        <option value="exam" data-i18n="modeExam">Іспит</option>
+                        <option value="ai" data-i18n="modeAI">AI Генерація</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="generate" class="auth-btn primary-btn" data-i18n="generateButton">Старт</button>
+            
+            <div id="exam-timer" class="exam-timer" style="display: none;"></div>
+            <div id="task-container" class="task-container"></div>
+
+            <div class="dictionary-section">
+                <h3 data-i18n="dictionaryTitle">Словник</h3>
+                
+                <div id="loader" class="loader" style="display: none;" data-i18n="loadingText">
+                    <i class="fas fa-spinner fa-spin"></i> Завантаження даних...
+                </div>
+                <div id="error-message" class="fetch-error" style="display: none;"></div>
+
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Всі</button>
+                    <button class="filter-btn" data-filter="favorites" data-i18n="filterFavorites">Улюблені</button>
+                    <button class="filter-btn" data-filter="food" data-i18n="topicFood">Їжа</button>
+                    <button class="filter-btn" data-filter="travel" data-i18n="topicTravel">Подорожі</button>
+                    <button class="filter-btn" data-filter="technology" data-i18n="topicTechnology">IT</button>
+                    <button class="filter-btn" data-filter="sport" data-i18n="topicSport">Спорт</button>
+                    <button class="filter-btn" data-filter="nature" data-i18n="topicNature">Природа</button>
+                </div>
+                <div id="dictionary-container" class="dictionary-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-settings-btn" class="close-btn" data-i18n="closeButton">×</span>
+            <h2 data-i18n="settingsTitle">Налаштування</h2>
+            <div class="setting-group">
+                <label data-i18n="themeLabel">Тема:</label>
+                <select id="theme-select">
+                    <option value="light" data-i18n="themeLight">Light</option>
+                    <option value="dark" data-i18n="themeDark">Dark</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label data-i18n="languageLabel">Мова:</label>
+                <select id="lang-select">
+                    <option value="uk">UA</option>
+                    <option value="en">EN</option>
+                </select>
+            </div>
+            <button id="logout-btn" class="auth-btn secondary-btn" data-i18n="logoutButton" style="margin-top: 24px; border-color: var(--fail-color); color: var(--fail-color);">Вийти</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
